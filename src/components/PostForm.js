@@ -6,21 +6,13 @@ import { FormWrapper } from "../Styling";
 
 const PostForm = () => {
   const URL = "https://localhost:44383/api/posts";
-  const [post, setPost] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    mode: "onChange",
-    defaultValues: {
-      text: "",
-      title: "",
-      createdBy: "",
-      category: "",
-    },
-  });
+  } = useForm();
 
   const onSubmit = (data) => {
     console.log("DATA: ", data);
@@ -28,14 +20,14 @@ const PostForm = () => {
       title: data.title,
       text: data.text,
       createdBy: data.createdBy,
-      category: data.category,
+      category: data.category.categoryName,
     };
 
     const savePost = async () => {
       await axios
         .post(URL, newPost)
         .then((response) => {
-          setPost([...post, newPost]);
+          setPosts([...posts, newPost]);
           console.log(response.data);
         })
         .catch((err) => {
@@ -51,7 +43,7 @@ const PostForm = () => {
         <h2 className="mt-3 text-center">Add new post</h2>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group controlId="formBasicText">
-            <Form.Label>First name</Form.Label>
+            <Form.Label>Title</Form.Label>
             <Form.Control
               type="text"
               placeholder="Title"
@@ -85,14 +77,26 @@ const PostForm = () => {
               <span className="text-danger">Author is required</span>
             )}
           </Form.Group>
-          <Form.Group controlId="formBasicText">
+          {/* <Form.Group controlId="formBasicText">
             <Form.Label className="mt-2">Category</Form.Label>
             <Form.Control
               type="text"
               placeholder="Category"
               {...register("category", { required: true })}
-            />
-          </Form.Group>
+            />  </Form.Group>*/}
+
+          <Form.Select
+            {...register("category.categoryName")}
+            aria-label="Choose category"
+          >
+            <option>Choose category</option>
+            {posts.map((post) => (
+              <option value={post.category.categoryName} key={post.category.id}>
+                post.category.categoryName
+              </option>
+            ))}
+          </Form.Select>
+
           <div className="text-center mt-3">
             <Button variant="info" type="submit">
               Add post
