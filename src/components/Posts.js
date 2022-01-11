@@ -1,43 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
-import { Button } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { getPosts, deletePost } from "../redux/postSlice";
+import { DeleteForever, Edit } from "@material-ui/icons";
 import { Post, PostsWrapper } from "../Styling";
 
 const Posts = () => {
   const URL = "https://localhost:44383/api/posts";
-  const [posts, setPosts] = useState([]);
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state.post.posts);
 
   useEffect(() => {
-    getPosts();
-  }, [URL]);
+    dispatch(getPosts());
+  }, [dispatch]);
 
-  const getPosts = async () => {
+  const editPost = async (id) => {
     await axios
-      .get(URL)
-      .then((response) => {
-        setPosts(response.data);
-        console.log(response.data);
-      })
-      .catch((err) => {
-        console.log("ERR", err);
-      });
-  };
-
-  const deletePost = async (id) => {
-    await axios
-      .delete(URL + "/" + id)
+      .put(URL + "/" + id)
       .then((res) => {
         console.log("RES:", res);
-        getPosts();
+        // getPosts();
+        dispatch(getPosts());
       })
       .catch((err) => {
         console.log("ERR", err);
         // setMessage("API ERROR");
       });
   };
+
   return (
     <>
-      <h1 className="text-center">Posts</h1>
+      <h1 className="text-center mb-4">Posts</h1>
       <PostsWrapper>
         {posts.map((post) => (
           <Post key={post.id}>
@@ -47,14 +40,29 @@ const Posts = () => {
             </div>
             <div>
               <p>Written by: {post.createdBy}</p>
-              <Button
-                variant="danger"
+              <p>Category: {post.category.categoryName}</p>
+
+              <span
+                className="text-danger margin-right"
+                role="button"
                 onClick={() => {
-                  deletePost(post.id);
+                  dispatch(deletePost(post.id));
+                  // deletePost(post.id);
                 }}
               >
                 Delete
-              </Button>
+                <DeleteForever className="icon" />
+              </span>
+              <span
+                role="button"
+                className="text-warning "
+                onClick={() => {
+                  editPost(post.id);
+                }}
+              >
+                Edit
+                <Edit className="icon" />
+              </span>
             </div>
           </Post>
         ))}
