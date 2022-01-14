@@ -1,9 +1,21 @@
 import styled from "styled-components";
 
+//----------General styling--------------
+export const PageWrapper = styled.div`
+  min-height: 100vh;
+  width: 100%;
+  padding-top: 80px;
+  background-color: #f7f7f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 //------------Form-styling-------------
 export const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: 30px;
 `;
 
 //------------Post-styling-------------
@@ -35,4 +47,15 @@ export const PostsWrapper = styled.section`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+`;
+
+//---------categories--------------
+
+export const Wrapper = styled.section`
+  width: 40%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
 `;

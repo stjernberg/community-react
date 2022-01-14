@@ -67,13 +67,12 @@ const Categories = () => {
 
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group controlId="formBasicText">
-            {/* <Form.Label>Category</Form.Label> */}
             <Form.Control
               type="text"
               placeholder="Name"
               {...register("categoryName", { required: true, minLength: 3 })}
             />
-            {errors.firstName && (
+            {errors.categoryName && (
               <span className="text-danger">Min length is 3 characters!</span>
             )}
           </Form.Group>

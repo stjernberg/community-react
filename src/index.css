@@ -12,7 +12,14 @@ code {
     monospace;
 }
 
+span {
+  font-weight: bold;
+}
 .navbar-costum {
   background: #eeeeee;
   height: 100px;
+}
+
+.margin-right {
+  margin-right: 10px;
 }

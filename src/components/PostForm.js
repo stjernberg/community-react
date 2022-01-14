@@ -1,34 +1,18 @@
 import { useForm } from "react-hook-form";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
 import { Button, Form } from "react-bootstrap";
-import { setMessage } from "../redux/postSlice";
+import { getCategories, addPost } from "../redux/postSlice";
 import { FormWrapper } from "../Styling";
 
 const PostForm = () => {
-  const URL = "https://localhost:44383/api/posts";
-  const categoryURL = "https://localhost:44383/api/categories";
-  const [posts, setPosts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const categories = useSelector((state) => state.post.categories);
   const message = useSelector((state) => state.post.message);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getCategories();
-  }, [URL]);
-
-  const getCategories = async () => {
-    await axios
-      .get(categoryURL)
-      .then((response) => {
-        setCategories(response.data);
-        console.log(response.data);
-      })
-      .catch((err) => {
-        console.log("ERR", err);
-      });
-  };
+    dispatch(getCategories());
+  }, [dispatch]);
 
   const {
     register,
@@ -45,18 +29,7 @@ const PostForm = () => {
       categoryId: data.categoryId,
     };
 
-    const savePost = async () => {
-      await axios
-        .post(URL, newPost)
-        .then(() => {
-          setPosts([...posts, newPost]);
-          dispatch(setMessage("Post successfully added!"));
-        })
-        .catch((err) => {
-          console.log("ERROR", err);
-        });
-    };
-    savePost();
+    dispatch(addPost(newPost));
   };
 
   return (
@@ -64,7 +37,7 @@ const PostForm = () => {
       <h2 className="mt-3 text-center">Add new post</h2>
       <FormWrapper>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group controlId="formBasicText">
+          <Form.Group controlId="formTitle">
             <Form.Label>Title</Form.Label>
             <Form.Control
               type="text"
@@ -75,7 +48,7 @@ const PostForm = () => {
               <span className="text-danger">Title is Required!</span>
             )}
           </Form.Group>
-          <Form.Group controlId="formBasicText">
+          <Form.Group controlId="formPassword">
             <Form.Label className="mt-2">Text</Form.Label>
             <Form.Control
               as="textarea"

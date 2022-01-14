@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import styled from "styled-components/macro";
 
 import PostForm from "./components/PostForm";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Posts from "./components/Posts";
+import Categories from "./components/Categories";
+import Dashboard from "./admin/Dashboard";
+import Preferences from "./admin/Preferences";
+import Login from "./admin/Login";
+import Register from "./admin/Register";
+import { PageWrapper } from "./Styling";
 
 const App = () => {
   return (
@@ -17,20 +22,19 @@ const App = () => {
             <Route component={Home} path="/" exact />
             <Route component={PostForm} path="/postForm" />
             <Route component={Posts} path="/posts" />
+            <Route component={Categories} path="/categories" />
+            <Route component={Dashboard} path="/dashboard" />
+            <Route component={Preferences} path="/preferences" />
+            <Route component={Register} path="/register" />
+
+            {/* {!token && ( */}
+            <Route component={Login} path="/login" />
+            {/* )} */}
           </PageWrapper>
         </Switch>
       </BrowserRouter>
     </>
   );
 };
-
-const PageWrapper = styled.div`
-  min-height: 100vh;
-  width: 100%;
-  padding-top: 80px;
-  background-color: #f7f7f7;
-  display: flex;
-  justify-content: center;
-`;
 
 export default App;
