@@ -30,6 +30,7 @@ const Categories = () => {
     };
 
     dispatch(addCategory(category));
+    window.location.reload();
   };
 
   return (
@@ -46,6 +47,7 @@ const Categories = () => {
           {categories.map((category) => (
             <tbody key={category.id}>
               <tr>
+                fgd
                 <td>{category.id}</td>
                 <td>{category.categoryName}</td>
                 <td>

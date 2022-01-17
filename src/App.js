@@ -10,6 +10,7 @@ import Dashboard from "./admin/Dashboard";
 import Preferences from "./admin/Preferences";
 import Login from "./admin/Login";
 import Register from "./admin/Register";
+import ManageRoles from "./admin/ManageRoles";
 import { PageWrapper } from "./Styling";
 
 const App = () => {
@@ -26,10 +27,8 @@ const App = () => {
             <Route component={Dashboard} path="/dashboard" />
             <Route component={Preferences} path="/preferences" />
             <Route component={Register} path="/register" />
-
-            {/* {!token && ( */}
+            <Route component={ManageRoles} path="/manageRoles" />
             <Route component={Login} path="/login" />
-            {/* )} */}
           </PageWrapper>
         </Switch>
       </BrowserRouter>

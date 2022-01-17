@@ -47,13 +47,6 @@ export const userSlice = createSlice({
       state.error = null;
     },
   },
-
-  // setToken: (state, action) => {
-  //   state.token = sessionStorage.setItem("token", action.payload);
-  // },
-  // getToken: (state) => {oi
-  //   state.token = sessionStorage.getItem("token");
-  // },
 });
 
 export const userLogin = (loginUser) => (dispatch) => {
