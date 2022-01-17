@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../redux/userSlice";
 import { Form, Button } from "react-bootstrap";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { isAuth } = useSelector((state) => state.user);
 
   const {
     register,
@@ -20,8 +23,15 @@ const Login = () => {
       userName: data.userName,
       password: data.password,
     };
+
     dispatch(userLogin(loginUser));
+    // const token = sessionStorage.getItem("token");
+
+    if (isAuth) {
+      history.push("/dashboard");
+    }
   };
+
   return (
     <>
       <Form onSubmit={handleSubmit(onSubmit)}>

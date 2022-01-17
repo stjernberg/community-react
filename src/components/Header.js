@@ -1,11 +1,15 @@
 import React from "react";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { logout } from "../redux/userSlice";
 
 const Header = () => {
   // const token  = useSelector((state) => state.user.token);
+  const { isAuth } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   return (
     <>
       <Navbar
@@ -39,11 +43,20 @@ const Header = () => {
               <Nav.Link as={Link} to="/preferences">
                 Preferences
               </Nav.Link>
-              {/* {!token && (  */}
-              <Nav.Link as={Link} to="/login">
-                Login
-              </Nav.Link>
-              {/* )}  */}
+              {!isAuth && (
+                <Nav.Link as={Link} to="/login">
+                  Login
+                </Nav.Link>
+              )}
+              {isAuth && (
+                <Nav.Link
+                  onClick={() => {
+                    dispatch(logout());
+                  }}
+                >
+                  Logout
+                </Nav.Link>
+              )}
               <Nav.Link as={Link} to="/register">
                 Register
               </Nav.Link>
