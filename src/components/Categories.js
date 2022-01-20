@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-
 import { useSelector, useDispatch } from "react-redux";
 import { DeleteForever } from "@material-ui/icons";
 import { Table, Form, Button } from "react-bootstrap";
@@ -30,7 +29,7 @@ const Categories = () => {
     };
 
     dispatch(addCategory(category));
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (
@@ -47,7 +46,6 @@ const Categories = () => {
           {categories.map((category) => (
             <tbody key={category.id}>
               <tr>
-                fgd
                 <td>{category.id}</td>
                 <td>{category.categoryName}</td>
                 <td>
