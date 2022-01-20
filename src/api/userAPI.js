@@ -15,3 +15,13 @@ export const getUserAPI = async () => {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+export const getUserWithRoleAPI = async () => {
+  return await axios.get(API_URL + "/CheckRole", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
+// export const getRolesOfUsersAPI = async () => {
+//   return await axios.get(API_URL + "/CheckAdmin", {
+//     headers: { Authorization: `Bearer ${token}` },
+//   });
+// };

@@ -75,6 +75,7 @@ export const getPosts = () => (dispatch) => {
       dispatch({ type: postsFetched.type, payload: res.data });
     })
     .catch((err) => {
+      console.log("Error:", err);
       // dispatch error
     });
 };
@@ -114,10 +115,12 @@ export const deletePost = (id) => (dispatch) => {
 };
 //-----------Api-requests for categories----------------
 export const getCategories = () => (dispatch) => {
-  dispatch({ type: requestStarted.type });
+  // dispatch({ type: requestStarted.type });
+  dispatch(requestStarted());
   getCategoriesAPI()
     .then((res) => {
-      dispatch({ type: categoriesFetched.type, payload: res.data });
+      dispatch(categoriesFetched(res.data));
+      // dispatch({ type: categoriesFetched.type, payload: res.data });
     })
     .catch((err) => {
       console.log("ERR:", err);
@@ -140,7 +143,7 @@ export const addCategory = (category) => (dispatch) => {
 };
 
 export const deleteCategory = (id) => (dispatch) => {
-  dispatch({ type: requestStarted.type });
+  dispatch(requestStarted());
   deleteCategoryAPI(id)
     .then((deleteRes) => {
       switch (deleteRes.status) {
@@ -161,11 +164,12 @@ export const deleteCategory = (id) => (dispatch) => {
           break;
       }
       getCategoriesAPI()
-        .then((fetchResponse) => {
-          dispatch({
-            type: categoriesFetched.type,
-            payload: fetchResponse.data,
-          });
+        .then((fetchRes) => {
+          // dispatch({
+          //   type: categoriesFetched.type,
+          //   payload: fetchResponse.data,
+          // });
+          dispatch(categoriesFetched(fetchRes.data));
         })
         .catch((err) => {
           console.log("ERR:", err);

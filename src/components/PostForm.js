@@ -10,9 +10,9 @@ const PostForm = () => {
   const message = useSelector((state) => state.post.message);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getCategories());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getCategories());
+  // }, [dispatch]);
 
   const {
     register,

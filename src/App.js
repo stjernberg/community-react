@@ -11,6 +11,7 @@ import Preferences from "./admin/Preferences";
 import Login from "./admin/Login";
 import Register from "./admin/Register";
 import ManageRoles from "./admin/ManageRoles";
+import AddRoles from "./admin/AddRoles";
 import { PageWrapper } from "./Styling";
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
             <Route component={Preferences} path="/preferences" />
             <Route component={Register} path="/register" />
             <Route component={ManageRoles} path="/manageRoles" />
+            <Route component={AddRoles} path="/addRoles/:id" />
             <Route component={Login} path="/login" />
           </PageWrapper>
         </Switch>

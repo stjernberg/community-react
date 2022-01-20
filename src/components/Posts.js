@@ -47,7 +47,7 @@ const Posts = () => {
                 role="button"
                 onClick={() => {
                   dispatch(deletePost(post.id));
-                  // deletePost(post.id);
+                 
                 }}
               >
                 Delete

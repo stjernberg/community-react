@@ -1,5 +1,5 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Container } from "react-bootstrap";
@@ -7,8 +7,22 @@ import { logout } from "../redux/userSlice";
 
 const Header = () => {
   // const token  = useSelector((state) => state.user.token);
-  const { isAuth } = useSelector((state) => state.user);
+  const { rolesOfUser } = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
+  const history = useHistory();
+  const token = sessionStorage.getItem("token");
+
+  // useEffect(() => {
+  //   if (!token) {
+  //     history.push("/dashboard");
+  //   }
+  // }, [history]);
+
+  const logoutUser = () => {
+    sessionStorage.removeItem("token");
+    dispatch(logout());
+  };
 
   return (
     <>
@@ -40,21 +54,20 @@ const Header = () => {
               <Nav.Link as={Link} to="/dashboard">
                 Dashboard
               </Nav.Link>
+              {/* {rolesOfUser === "Admin" && ( */}
+              <Nav.Link as={Link} to="/manageRoles">
+                Manage Roles
+              </Nav.Link>
+              {/* )} */}
+
               <Nav.Link as={Link} to="/preferences">
                 Preferences
               </Nav.Link>
-              {!isAuth && (
+
+              {token && <Nav.Link onClick={logoutUser}>Logout</Nav.Link>}
+              {!token && (
                 <Nav.Link as={Link} to="/login">
                   Login
-                </Nav.Link>
-              )}
-              {isAuth && (
-                <Nav.Link
-                  onClick={() => {
-                    dispatch(logout());
-                  }}
-                >
-                  Logout
                 </Nav.Link>
               )}
               <Nav.Link as={Link} to="/register">
