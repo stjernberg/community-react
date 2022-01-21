@@ -3,25 +3,26 @@ import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Container } from "react-bootstrap";
-import { logout } from "../redux/userSlice";
+import { userLogout, checkUsersRole } from "../redux/userSlice";
 
 const Header = () => {
   // const token  = useSelector((state) => state.user.token);
-  const { rolesOfUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user);
+  const { isAuth } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
   const history = useHistory();
   const token = sessionStorage.getItem("token");
+  // let isAuth = rolesOfUser.includes("Admin" || "SuperAdmin");
 
-  // useEffect(() => {
-  //   if (!token) {
-  //     history.push("/dashboard");
-  //   }
-  // }, [history]);
+  useEffect(() => {
+    dispatch(checkUsersRole());
+  }, [dispatch]);
 
   const logoutUser = () => {
+    dispatch(userLogout());
     sessionStorage.removeItem("token");
-    dispatch(logout());
+    history.push("/dashboard");
   };
 
   return (
@@ -42,37 +43,39 @@ const Header = () => {
               <Nav.Link href="/" exact className="nav-color">
                 Home
               </Nav.Link>
-              <Nav.Link as={Link} to="/postForm">
-                Add post
-              </Nav.Link>
+
               <Nav.Link as={Link} to="/posts">
                 Blog posts
               </Nav.Link>
-              <Nav.Link as={Link} to="/categories">
+              {/* <Nav.Link as={Link} to="/categories">
                 Categories
-              </Nav.Link>
+              </Nav.Link> */}
               <Nav.Link as={Link} to="/dashboard">
                 Dashboard
               </Nav.Link>
-              {/* {rolesOfUser === "Admin" && ( */}
-              <Nav.Link as={Link} to="/manageRoles">
-                Manage Roles
-              </Nav.Link>
-              {/* )} */}
-
-              <Nav.Link as={Link} to="/preferences">
-                Preferences
-              </Nav.Link>
-
-              {token && <Nav.Link onClick={logoutUser}>Logout</Nav.Link>}
-              {!token && (
-                <Nav.Link as={Link} to="/login">
-                  Login
+              {token && isAuth && (
+                <Nav.Link as={Link} to="/manageRoles">
+                  Manage Roles
                 </Nav.Link>
               )}
-              <Nav.Link as={Link} to="/register">
-                Register
-              </Nav.Link>
+              {token && (
+                <div className="d-flex">
+                  <Nav.Link as={Link} to="/postForm">
+                    Add post
+                  </Nav.Link>
+                  <Nav.Link onClick={logoutUser}>Logout</Nav.Link>
+                </div>
+              )}
+              {!token && (
+                <div className="d-flex">
+                  <Nav.Link as={Link} to="/login">
+                    Login
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/register">
+                    Register
+                  </Nav.Link>
+                </div>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

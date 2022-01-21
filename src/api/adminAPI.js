@@ -17,6 +17,9 @@ export const userRolesAPI = async (id) => {
 export const addUserRolesAPI = async (userId, roleId) => {
   return await axios.get(API_URL + "/addToRole/" + userId + "/" + roleId);
 };
+export const deleteUserRolesAPI = async (userId, roleId) => {
+  return await axios.get(API_URL + "/removeFromRole/" + userId + "/" + roleId);
+};
 
 export const getUsersAPI = async () => {
   return await axios.get(API_URL + "/allUsers");

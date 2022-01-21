@@ -29,7 +29,6 @@ const Categories = () => {
     };
 
     dispatch(addCategory(category));
-    // window.location.reload();
   };
 
   return (
