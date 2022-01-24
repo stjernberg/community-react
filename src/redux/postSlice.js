@@ -66,7 +66,7 @@ export const postSlice = createSlice({
   },
 });
 
-//-----------Api-requests for posts----------------
+//-----------Get all posts----------------
 
 export const getPosts = () => (dispatch) => {
   dispatch({ type: requestStarted.type });
@@ -80,13 +80,13 @@ export const getPosts = () => (dispatch) => {
     });
 };
 
+//-----------Create a post----------------
 export const addPost = (post) => (dispatch) => {
   dispatch(requestStarted());
 
   addPostAPI(post)
     .then((res) => {
       dispatch(postsAdded(res.data));
-      // dispatch(setMessage("Post successfully added!"));
     })
     .catch((err) => {
       // dispatch error
@@ -94,6 +94,7 @@ export const addPost = (post) => (dispatch) => {
     });
 };
 
+//-----------Delete a post----------------
 export const deletePost = (id) => (dispatch) => {
   dispatch({ type: requestStarted.type });
 
@@ -113,7 +114,7 @@ export const deletePost = (id) => (dispatch) => {
       // dispatch error
     });
 };
-//-----------Api-requests for categories----------------
+//--------Gets all categories ----------------
 export const getCategories = () => (dispatch) => {
   // dispatch({ type: requestStarted.type });
   dispatch(requestStarted());
@@ -128,6 +129,7 @@ export const getCategories = () => (dispatch) => {
     });
 };
 
+//--------Create a new categories ----------------
 export const addCategory = (category) => (dispatch) => {
   dispatch(requestStarted());
 
@@ -135,13 +137,23 @@ export const addCategory = (category) => (dispatch) => {
     .then((res) => {
       dispatch(categoriesAdded(res.data));
       // dispatch(setMessage("Category successfully added!"));
+      getCategories()
+        .then((fetchRes) => {
+          dispatch(categoriesFetched(fetchRes.data));
+        })
+        .catch((err) => {
+          console.log("ERR:", err);
+          // dispatch error
+        });
     })
+
     .catch((err) => {
       // dispatch error
       console.log("ERR:", err);
     });
 };
 
+//--------Delete a category ----------------
 export const deleteCategory = (id) => (dispatch) => {
   dispatch(requestStarted());
   deleteCategoryAPI(id)
@@ -165,10 +177,6 @@ export const deleteCategory = (id) => (dispatch) => {
       }
       getCategoriesAPI()
         .then((fetchRes) => {
-          // dispatch({
-          //   type: categoriesFetched.type,
-          //   payload: fetchResponse.data,
-          // });
           dispatch(categoriesFetched(fetchRes.data));
         })
         .catch((err) => {

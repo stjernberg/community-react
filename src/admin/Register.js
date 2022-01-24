@@ -1,19 +1,35 @@
-import React from "react";
-// import axios from "axios";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Button, Form } from "react-bootstrap";
 import { FormWrapper } from "../Styling";
-import { userReg } from "../redux/userSlice";
+import { userReg, editUser, getEditUser } from "../redux/userSlice";
 
 const Register = () => {
   const dispatch = useDispatch();
+  const { id } = useParams();
+  const isAddMode = !id;
+  const { user } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (!isAddMode) {
+      dispatch(getEditUser(id));
+    }
+  }, [dispatch, id, isAddMode]);
 
   const {
     register,
     handleSubmit,
+    setValue,
+
     formState: { errors },
   } = useForm();
+
+  if (!isAddMode) {
+    let fields = ["firstName", "lastName", "email", "phoneNr", "userName"];
+    fields.forEach((field) => setValue(field, user[field]));
+  }
 
   const onSubmit = (data) => {
     console.log("DATA: ", data);
@@ -26,13 +42,23 @@ const Register = () => {
       password: data.password,
       confirmPassword: data.confirmPassword,
     };
+    return isAddMode ? createUser(newUser) : updateUser(id, newUser);
+  };
 
+  const createUser = (newUser) => {
     dispatch(userReg(newUser));
+  };
+
+  const updateUser = (id, newUser) => {
+    // dispatch(getEditUser(id));
+    dispatch(editUser(id, newUser));
   };
 
   return (
     <>
-      <h2 className="mt-3 text-center">Add new post</h2>
+      <h2 className="mt-3 text-center">
+        {isAddMode ? "Register" : "Edit Profile"}
+      </h2>
       <FormWrapper>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group>
@@ -118,7 +144,7 @@ const Register = () => {
 
           <div className="text-center mt-3">
             <Button variant="info" type="submit">
-              Add post
+              {isAddMode ? "Register" : "Edit"}
             </Button>
           </div>
         </Form>

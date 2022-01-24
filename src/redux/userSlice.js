@@ -1,17 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { loginAPI, regAPI, getUserAPI } from "../api/userAPI";
+import {
+  loginAPI,
+  logoutAPI,
+  regAPI,
+  getUserAPI,
+  checkRoleAPI,
+  getEditUserAPI,
+  editUserAPI,
+} from "../api/userAPI";
 
 const initialState = {
   loggedIn: false,
-  // userName: null,
   role: null,
   statusMessage: null,
-  rolesOfUser: "",
+  rolesOfUser: [],
   error: null,
   loading: false,
   token: null,
   currentUser: {},
+  user: {},
+  isAuth: false,
+  isSuper: false,
 };
 
 export const userSlice = createSlice({
@@ -22,15 +32,26 @@ export const userSlice = createSlice({
       state.loading = true;
     },
     loginSuccess: (state, action) => {
-      state.currentUser = action.payload;
       state.loading = false;
       state.error = "";
+      // sessionStorage.setItem("token", action.payload);
       state.loggedIn = true;
     },
 
     registerSuccess: (state) => {
       state.loading = false;
       state.error = "";
+      state.message = "Registration succeeded!";
+    },
+
+    setEditUser: (state, action) => {
+      state.user = action.payload;
+    },
+
+    editSuccess: (state) => {
+      state.loading = false;
+      state.error = "";
+      state.message = "Edit succeeded!";
     },
     loginFailed: (state, action) => {
       state.isLoading = false;
@@ -41,6 +62,7 @@ export const userSlice = createSlice({
       state.loggedIn = false;
       state.currentUser = null;
       state.rolesOfUser = null;
+      state.isAuth = false;
     },
 
     userFetched: (state, action) => {
@@ -50,19 +72,32 @@ export const userSlice = createSlice({
     },
     setRolesOfUsers: (state, action) => {
       state.rolesOfUser = action.payload;
+      state.isAuth =
+        state.rolesOfUser.includes("Admin") ||
+        state.rolesOfUser.includes("SuperAdmin");
+      state.isSuper = state.rolesOfUser.includes("SuperAdmin");
     },
   },
 });
 
+//----User log in---------
 export const userLogin = (loginUser) => (dispatch) => {
   dispatch(requestStarted());
   loginAPI(loginUser)
     .then((res) => {
       dispatch(loginSuccess(res.data));
       sessionStorage.setItem("token", res.data);
-
       console.log("user logged in");
       console.log(res.data);
+      getUserAPI()
+        .then((res) => {
+          dispatch(userFetched(res.data));
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log("ERR:", err);
+          // dispatch error
+        });
     })
     .catch((err) => {
       // dispatch error
@@ -70,6 +105,7 @@ export const userLogin = (loginUser) => (dispatch) => {
     });
 };
 
+//----Registers the user---------
 export const userReg = (newUser) => (dispatch) => {
   dispatch(requestStarted());
   regAPI(newUser)
@@ -82,14 +118,56 @@ export const userReg = (newUser) => (dispatch) => {
     });
 };
 
-export const getCurrentUser = () => (dispatch) => {
+//-----------Edit a user----------------
+// ---  Get the user---
+export const getEditUser = (id) => (dispatch) => {
+  getEditUserAPI(id)
+    .then((res) => {
+      dispatch(setEditUser(res.data));
+      console.log(res.data);
+    })
+    .catch((err) => {
+      // dispatch error
+      console.log("ERR:", err);
+    });
+};
+
+// ---Edit the user---
+export const editUser = (id, newUser) => (dispatch) => {
+  editUserAPI(id, newUser)
+    .then((res) => {
+      dispatch(setEditUser(res.data));
+      console.log("User edited");
+      console.log(res.data);
+    })
+    .catch((err) => {
+      // dispatch error
+      console.log("ERR:", err);
+    });
+};
+
+//----Logout---------
+export const userLogout = () => (dispatch) => {
   dispatch(requestStarted());
+  logoutAPI()
+    .then((res) => {
+      dispatch(logout(res.data));
+
+      console.log(res.data);
+    })
+    .catch((err) => {
+      // dispatch error
+      console.log("ERR:", err);
+    });
+};
+
+//----Gets the logged in user---------
+export const getCurrentUser = () => (dispatch) => {
+  // dispatch(requestStarted());
   getUserAPI()
     .then((res) => {
-      // dispatch({ type: userFetched.type, payload: res.data });
       dispatch(userFetched(res.data));
       console.log(res.data);
-      // dispatch(setRolesOfUsers(res.data.role));
     })
     .catch((err) => {
       console.log("ERR:", err);
@@ -97,18 +175,19 @@ export const getCurrentUser = () => (dispatch) => {
     });
 };
 
-// export const checkUsersRole = () => (dispatch) => {
-//   dispatch({ type: requestStarted.type });
-//   getRolesOfUsersAPI()
-//     .then((res) => {
-//       dispatch(setRolesOfUsers(res.data));
-//       console.log(res.data);
-//     })
-//     .catch((err) => {
-//       console.log("Error:", err);
-//       // dispatch error
-//     });
-// };
+// ------Checks what role the user's in---------
+export const checkUsersRole = () => (dispatch) => {
+  // dispatch({ type: requestStarted.type });
+  checkRoleAPI()
+    .then((res) => {
+      dispatch(setRolesOfUsers(res.data));
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log("Error:", err);
+      // dispatch error
+    });
+};
 
 export const {
   requestStarted,
@@ -117,6 +196,7 @@ export const {
   loginSuccess,
   loginFailed,
   setToken,
+  setEditUser,
   userFetched,
   setRolesOfUsers,
 } = userSlice.actions;

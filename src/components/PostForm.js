@@ -1,14 +1,17 @@
 import { useForm } from "react-hook-form";
 import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Form } from "react-bootstrap";
-import { getCategories, addPost } from "../redux/postSlice";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
+import { editPost, addPost } from "../redux/postSlice";
 import { FormWrapper } from "../Styling";
 
 const PostForm = () => {
   const categories = useSelector((state) => state.post.categories);
   const message = useSelector((state) => state.post.message);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   // useEffect(() => {
   //   dispatch(getCategories());
@@ -95,6 +98,16 @@ const PostForm = () => {
         </Form>
       </FormWrapper>
       {message && <h4>{`${message}`}</h4>}
+      <span
+        className="font-bold"
+        role="button"
+        onClick={() => history.push("/posts")}
+      >
+        View posts
+        <DoubleArrowIcon className="icon" />
+      </span>
+
+      {message && <p>{message}</p>}
     </>
   );
 };
