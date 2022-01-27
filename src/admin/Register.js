@@ -22,7 +22,6 @@ const Register = () => {
     register,
     handleSubmit,
     setValue,
-
     formState: { errors },
   } = useForm();
 
@@ -50,7 +49,6 @@ const Register = () => {
   };
 
   const updateUser = (id, newUser) => {
-    // dispatch(getEditUser(id));
     dispatch(editUser(id, newUser));
   };
 

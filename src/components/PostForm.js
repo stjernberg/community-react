@@ -1,27 +1,46 @@
 import { useForm } from "react-hook-form";
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Form } from "react-bootstrap";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
-import { editPost, addPost } from "../redux/postSlice";
+import {
+  getPost,
+  addPost,
+  getCategories,
+  editPost,
+  setMessage,
+} from "../redux/postSlice";
 import { FormWrapper } from "../Styling";
 
 const PostForm = () => {
-  const categories = useSelector((state) => state.post.categories);
-  const message = useSelector((state) => state.post.message);
+  const { categories } = useSelector((state) => state.post);
+  const { message } = useSelector((state) => state.post);
+  const { post } = useSelector((state) => state.post);
   const dispatch = useDispatch();
   const history = useHistory();
+  const { id } = useParams();
+  const isAddMode = !id;
 
-  // useEffect(() => {
-  //   dispatch(getCategories());
-  // }, [dispatch]);
+  useEffect(() => {
+    if (!isAddMode) {
+      dispatch(getPost(id));
+      dispatch(getCategories());
+      dispatch(setMessage(null));
+    }
+  }, [dispatch, id, isAddMode]);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
+
+  if (!isAddMode) {
+    let fields = ["title", "text", "createdBy", "categoryId"];
+    fields.forEach((field) => setValue(field, post[field]));
+  }
 
   const onSubmit = (data) => {
     console.log("DATA: ", data);
@@ -32,12 +51,21 @@ const PostForm = () => {
       categoryId: data.categoryId,
     };
 
+    return isAddMode ? createPost(newPost) : updatePost(id, newPost);
+  };
+  const createPost = (newPost) => {
     dispatch(addPost(newPost));
+  };
+
+  const updatePost = (id, newPost) => {
+    dispatch(editPost(id, newPost));
   };
 
   return (
     <>
-      <h2 className="mt-3 text-center">Add new post</h2>
+      <h2 className="mt-3 text-center">
+        {isAddMode ? "Wirte a post" : "Edit Post"}
+      </h2>
       <FormWrapper>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group controlId="formTitle">
@@ -92,7 +120,7 @@ const PostForm = () => {
           )}
           <div className="text-center mt-3">
             <Button variant="info" type="submit">
-              Add post
+              {isAddMode ? "Add" : "Edit"}
             </Button>
           </div>
         </Form>
