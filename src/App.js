@@ -12,6 +12,9 @@ import Login from "./admin/Login";
 import Register from "./admin/Register";
 import ManageRoles from "./admin/ManageRoles";
 import AddRoles from "./admin/AddRoles";
+import Users from "./admin/Users";
+import CalendarView from "./calendar/CalendarView";
+import EventForm from "./calendar/EventForm";
 import { PageWrapper } from "./Styling";
 
 const App = () => {
@@ -22,15 +25,20 @@ const App = () => {
         <Switch>
           <PageWrapper>
             <Route component={Home} path="/" exact />
-            <Route component={PostForm} path="/postForm" />
+            <Route component={PostForm} path={["/addPost", "/editPost/:id"]} />
+            <Route component={CalendarView} path="/calendar" />
             <Route component={Posts} path="/posts" />
             <Route component={Categories} path="/categories" />
             <Route component={Dashboard} path="/dashboard" />
             <Route component={Preferences} path="/preferences" />
-            <Route component={Register} path="/register" />
             <Route component={ManageRoles} path="/manageRoles" />
             <Route component={AddRoles} path="/addRoles/:id" />
+            <Route component={Users} path="/users" />
             <Route component={Login} path="/login" />
+            <Route component={EventForm} path="/eventForm" />
+            <Route path={["/addUser", "/editUser/:id"]}>
+              <Register />
+            </Route>
           </PageWrapper>
         </Switch>
       </BrowserRouter>

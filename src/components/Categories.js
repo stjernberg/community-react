@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { DeleteForever } from "@material-ui/icons";
 import { Table, Form, Button } from "react-bootstrap";
 import { getCategories, addCategory, deleteCategory } from "../redux/postSlice";
-
 import { Wrapper } from "../Styling";
 
 const Categories = () => {

@@ -1,15 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   getPostsAPI,
+  getPostAPI,
   addPostAPI,
   getCategoriesAPI,
   addCategoryAPI,
   deletePostAPI,
+  editPostAPI,
   deleteCategoryAPI,
 } from "../api/postAPI";
 
 const initialState = {
   posts: [],
+  post: {},
   categories: [],
   message: "",
   error: null,
@@ -26,14 +29,27 @@ export const postSlice = createSlice({
     requestFailedPost: (state, action) => {
       state.error = action.payload;
       state.loading = false;
-      state.persons = [];
-      state.person = {};
+      state.posts = [];
+      state.posts = {};
     },
 
     postsFetched: (state, action) => {
       state.posts = action.payload;
       state.loading = false;
       state.error = null;
+    },
+
+    setPost: (state, action) => {
+      state.post = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+
+    editSuccess: (state, action) => {
+      state.post = action.payload;
+      state.loading = false;
+      state.error = null;
+      state.message = "User successfully edited!";
     },
 
     postsAdded: (state, action) => {
@@ -72,7 +88,8 @@ export const getPosts = () => (dispatch) => {
   dispatch({ type: requestStarted.type });
   getPostsAPI()
     .then((res) => {
-      dispatch({ type: postsFetched.type, payload: res.data });
+      // dispatch({ type: postsFetched.type, payload: res.data });
+      dispatch(postsFetched(res.data));
     })
     .catch((err) => {
       console.log("Error:", err);
@@ -80,6 +97,34 @@ export const getPosts = () => (dispatch) => {
     });
 };
 
+//-----------Get a single post----------------
+
+export const getPost = (id) => (dispatch) => {
+  // dispatch({ type: requestStarted.type });
+  getPostAPI(id)
+    .then((res) => {
+      dispatch(editSuccess(res.data));
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log("Error:", err);
+      // dispatch error
+    });
+};
+
+//-----------Edit a post----------------
+
+export const editPost = (id, newPost) => (dispatch) => {
+  editPostAPI(id, newPost)
+    .then((res) => {
+      dispatch(editSuccess(res.data));
+      console.log("User is edited:", res.data);
+    })
+    .catch((err) => {
+      console.log("Error:", err);
+      // dispatch error
+    });
+};
 //-----------Create a post----------------
 export const addPost = (post) => (dispatch) => {
   dispatch(requestStarted());
@@ -121,7 +166,6 @@ export const getCategories = () => (dispatch) => {
   getCategoriesAPI()
     .then((res) => {
       dispatch(categoriesFetched(res.data));
-      // dispatch({ type: categoriesFetched.type, payload: res.data });
     })
     .catch((err) => {
       console.log("ERR:", err);
@@ -192,12 +236,14 @@ export const {
   requestStarted,
   requestFailedPost,
   postsFetched,
+  editSuccess,
   categoriesFetched,
   postsAdded,
   setMessage,
   requestFailedCategory,
   categoriesAdded,
   post,
+  setPost,
 } = postSlice.actions;
 
 export default postSlice.reducer;

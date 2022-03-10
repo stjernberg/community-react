@@ -34,3 +34,9 @@ export const deleteRoleAPI = async (id) => {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+
+export const deleteUserAPI = async (id) => {
+  return await axios.delete(API_URL + "/deleteUser/" + id, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};

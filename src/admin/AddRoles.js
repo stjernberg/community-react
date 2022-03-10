@@ -1,10 +1,14 @@
-import { useForm } from "react-hook-form";
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import { DeleteForever, Add } from "@material-ui/icons";
-import { getRole, getUserRoles, addUserRole } from "../redux/adminSlice";
+import {
+  getRole,
+  getUserRoles,
+  addUserRole,
+  removeUserRole,
+} from "../redux/adminSlice";
 import { Wrapper } from "../Styling";
 
 const AddRoles = () => {
@@ -13,6 +17,7 @@ const AddRoles = () => {
   const { usersNoRole } = useSelector((state) => state.admin);
   const { usersWithRole } = useSelector((state) => state.admin);
   const { id } = useParams();
+  const history = useHistory();
 
   useEffect(() => {
     dispatch(getRole(id));
@@ -38,7 +43,13 @@ const AddRoles = () => {
                   {user.firstName} {user.lastName}
                 </td>
                 <td>
-                  <span role="button" className="text-danger font-bold">
+                  <span
+                    role="button"
+                    className="text-danger font-bold"
+                    onClick={() => {
+                      dispatch(removeUserRole(user.id, id));
+                    }}
+                  >
                     Remove
                     <DeleteForever className="icon" />
                   </span>
@@ -76,6 +87,15 @@ const AddRoles = () => {
             ))}
           </tbody>
         </Table>
+
+        <Button
+          variant="info"
+          onClick={() => {
+            history.push("/manageRoles");
+          }}
+        >
+          Back
+        </Button>
       </Wrapper>
     </>
   );

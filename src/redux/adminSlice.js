@@ -7,6 +7,8 @@ import {
   getRoleAPI,
   userRolesAPI,
   addUserRolesAPI,
+  deleteUserRolesAPI,
+  deleteUserAPI,
 } from "../api/adminAPI";
 
 const initialState = {
@@ -68,6 +70,7 @@ export const adminSlice = createSlice({
   },
 });
 
+//-----------Get all roles----------------
 export const getRoles = () => (dispatch) => {
   dispatch({ type: requestStarted.type });
   getRolesAPI()
@@ -81,6 +84,7 @@ export const getRoles = () => (dispatch) => {
     });
 };
 
+//-----------Get a specific role----------------
 export const getRole = (id) => (dispatch) => {
   dispatch({ type: requestStarted.type });
   getRoleAPI(id)
@@ -94,6 +98,7 @@ export const getRole = (id) => (dispatch) => {
     });
 };
 
+//-----------Get all users in a specific role----------------
 export const getUserRoles = (id) => (dispatch) => {
   dispatch({ type: requestStarted.type });
   userRolesAPI(id)
@@ -108,12 +113,18 @@ export const getUserRoles = (id) => (dispatch) => {
     });
 };
 
+//-----------Add a role to a user----------------
 export const addUserRole = (userId, roleId) => (dispatch) => {
   addUserRolesAPI(userId, roleId)
     .then((res) => {
-      // dispatch(setUsersWithRoles(res.data));
-      // dispatch(setUsersNoRoles(res.data));
-      // dispatch({ type: rolesAdded.type, payload: res.data });
+      userRolesAPI(roleId)
+        .then((rolesRes) => {
+          dispatch(setUsersWithRoles(rolesRes.data.userWithRole));
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+          // dispatch error
+        });
       console.log(res.data, "Role successfully added!");
     })
     .catch((err) => {
@@ -121,6 +132,28 @@ export const addUserRole = (userId, roleId) => (dispatch) => {
       console.log("ERR:", err);
     });
 };
+
+//-----------Remove a role from a user----------------
+export const removeUserRole = (userId, roleId) => (dispatch) => {
+  deleteUserRolesAPI(userId, roleId)
+    .then((res) => {
+      userRolesAPI(roleId)
+        .then((rolesRes) => {
+          dispatch(setUsersNoRoles(rolesRes.data.userNoRole));
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+          // dispatch error
+        });
+      console.log(res.data, "Role successfully removed");
+    })
+    .catch((err) => {
+      // dispatch error
+      console.log("ERR:", err);
+    });
+};
+
+//-----------Get all users----------------
 export const getUsers = () => (dispatch) => {
   // dispatch({ type: requestStarted.type });
   getUsersAPI()
@@ -134,12 +167,20 @@ export const getUsers = () => (dispatch) => {
     });
 };
 
+//-----------Create a new role----------------
 export const addRole = (role) => (dispatch) => {
   addRoleAPI(role)
     .then((res) => {
       dispatch(rolesAdded(res.data));
-      // dispatch({ type: rolesAdded.type, payload: res.data });
       console.log("Role successfully added!");
+      getRolesAPI()
+        .then((res) => {
+          dispatch(setRoles(res.data));
+        })
+        .catch((err) => {
+          console.log("Error:", err);
+          // dispatch error
+        });
     })
     .catch((err) => {
       // dispatch error
@@ -147,12 +188,33 @@ export const addRole = (role) => (dispatch) => {
     });
 };
 
+//-----------Delete a role ----------------
 export const deleteRole = (id) => (dispatch) => {
   deleteRoleAPI(id)
     .then((deleteRes) => {
-      deleteRoleAPI()
+      getRolesAPI()
         .then((fetchRes) => {
           dispatch(setRoles(fetchRes.data));
+        })
+        .catch((err) => {
+          console.log("ERR:", err);
+          // dispatch error
+        });
+    })
+    .catch((err) => {
+      console.log("ERR:", err);
+      // dispatch error
+    });
+};
+
+//-----------Delete a user ----------------
+export const deleteUser = (id) => (dispatch) => {
+  deleteUserAPI(id)
+    .then((deleteRes) => {
+      console.log("Deleteres:", deleteRes);
+      getUsersAPI()
+        .then((fetchRes) => {
+          dispatch(setUsers(fetchRes.data));
         })
         .catch((err) => {
           console.log("ERR:", err);

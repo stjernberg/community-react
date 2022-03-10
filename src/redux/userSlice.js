@@ -63,6 +63,8 @@ export const userSlice = createSlice({
       state.currentUser = null;
       state.rolesOfUser = null;
       state.isAuth = false;
+      state.isSuper = false;
+      sessionStorage.removeItem("token");
     },
 
     userFetched: (state, action) => {
@@ -89,6 +91,7 @@ export const userLogin = (loginUser) => (dispatch) => {
       sessionStorage.setItem("token", res.data);
       console.log("user logged in");
       console.log(res.data);
+
       getUserAPI()
         .then((res) => {
           dispatch(userFetched(res.data));
@@ -148,12 +151,11 @@ export const editUser = (id, newUser) => (dispatch) => {
 
 //----Logout---------
 export const userLogout = () => (dispatch) => {
-  dispatch(requestStarted());
+  // dispatch(requestStarted());
   logoutAPI()
     .then((res) => {
       dispatch(logout(res.data));
-
-      console.log(res.data);
+      //sessionStorage.removeItem("token");
     })
     .catch((err) => {
       // dispatch error

@@ -11,8 +11,6 @@ import Roles from "./Roles";
 const ManageRoles = () => {
   const dispatch = useDispatch();
   const { roles } = useSelector((state) => state.admin);
-  // const { users } = useSelector((state) => state.admin);
-  // const [roleName, setRoleName] = useState("");
 
   useEffect(() => {
     dispatch(getRoles());
@@ -67,19 +65,6 @@ const ManageRoles = () => {
             </Button>
           </div>
         </Form>
-
-        {/* <h2>Add roles to users</h2>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>User</th>
-              <th></th>
-            </tr>
-          </thead>
-          {users.map((user) => (
-            <AddRoles key={user.id} {...user} />
-          ))}
-        </Table>*/}
       </Wrapper>
     </>
   );
