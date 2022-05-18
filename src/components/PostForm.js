@@ -64,7 +64,7 @@ const PostForm = () => {
   return (
     <>
       <h2 className="mt-3 text-center">
-        {isAddMode ? "Wirte a post" : "Edit Post"}
+        {isAddMode ? "Write a post" : "Edit Post"}
       </h2>
       <FormWrapper>
         <Form onSubmit={handleSubmit(onSubmit)}>

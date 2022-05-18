@@ -10,7 +10,6 @@ const Posts = () => {
   const dispatch = useDispatch();
   const { posts } = useSelector((state) => state.post);
   const { isAuth } = useSelector((state) => state.admin);
-  // const token = sessionStorage.getItem("token");
   const { rolesOfUser } = useSelector((state) => state.user);
   const history = useHistory();
 

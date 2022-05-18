@@ -1,13 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { DeleteForever } from "@material-ui/icons";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { deleteRole } from "../redux/adminSlice";
 
-const Roles = ({ name, id }) => {
-  // const users = useSelector((state) => state.user.users);
-  // const {role} = useSelector((state) => state.admin);
+const Roles = ({ name, id }) => {  
   const { isAuth } = useSelector((state) => state.user);
   const token = sessionStorage.getItem("token");
   const dispatch = useDispatch();
